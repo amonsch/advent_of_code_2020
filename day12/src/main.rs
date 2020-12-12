@@ -31,10 +31,10 @@ mod tests {
 fn rotate(x: f32, y: f32, rad: f32) -> (f32, f32) {
     let new_x: f32 = x * f32::cos(rad) + y * f32::sin(rad);
     let new_y: f32 = x * -f32::sin(rad) + y * f32::cos(rad);
-    (new_x, new_y)
+    (new_x.round(), new_y.round())
 }
 
-fn calc_distance(mut dir_x: i32, mut dir_y: i32, actions: &[(char, i32)]) {
+fn calc_distance(move_waypoint: bool, mut dir_x: i32, mut dir_y: i32, actions: &[(char, i32)]) {
     let mut x = 0;
     let mut y = 0;
 
@@ -49,8 +49,8 @@ fn calc_distance(mut dir_x: i32, mut dir_y: i32, actions: &[(char, i32)]) {
                         degree = -action.1 as f32;
                     }
                     let new = rotate(dir_x as f32, dir_y as f32, degree.to_radians());
-                    dir_x = new.0.round() as i32;
-                    dir_y = new.1.round() as i32;
+                    dir_x = new.0 as i32;
+                    dir_y = new.1 as i32;
                 }
                 _ => {
                     panic!("Invalid orientation")
@@ -61,16 +61,32 @@ fn calc_distance(mut dir_x: i32, mut dir_y: i32, actions: &[(char, i32)]) {
                 y += dir_y * action.1;
             }
             'E' => {
-                dir_x += action.1;
+                if !move_waypoint {
+                    x += action.1;
+                } else {
+                    dir_x += action.1;
+                }
             }
             'W' => {
-                dir_x -= action.1;
+                if !move_waypoint {
+                    x -= action.1;
+                } else {
+                    dir_x -= action.1;
+                }
             }
             'N' => {
-                dir_y += action.1;
+                if !move_waypoint {
+                    y += action.1;
+                } else {
+                    dir_y += action.1;
+                }
             }
             'S' => {
-                dir_y -= action.1;
+                if !move_waypoint {
+                    y -= action.1;
+                } else {
+                    dir_y -= action.1;
+                }
             }
             _ => {
                 panic!("Invalid action")
@@ -87,6 +103,6 @@ fn main() {
         return;
     }
     let actions = input(&args[1]).unwrap();
-    calc_distance(1, 0, &actions);
-    calc_distance(10, 1, &actions);
+    calc_distance(false, 1, 0, &actions);
+    calc_distance(true, 10, 1, &actions);
 }
