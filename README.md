@@ -11,4 +11,4 @@ cargo run input.txt
 
 # Why?
 
-In order to improve my knowledge Rust, for science and for fun of course.
+In order to improve my knowledge of Rust, for science and for fun of course.
